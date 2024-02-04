@@ -280,7 +280,7 @@ int
 fork(void)
 {
   int i, pid;
-  struct proc *np;
+  struct proc *np;  // new process
   struct proc *p = myproc();
 
   // Allocate process.
@@ -321,6 +321,8 @@ fork(void)
   acquire(&np->lock);
   np->state = RUNNABLE;
   release(&np->lock);
+
+  np->trace_mask = p->trace_mask;
 
   return pid;
 }
