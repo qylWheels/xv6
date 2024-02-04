@@ -1,0 +1,6 @@
+usertrap()
+7; SYS_exec
+user mode
+lw a3,0(zero); a3
+virtual address 0 isn't mapped to physical address; scause = 13, which means "load page fault"
+initcode; pid = 1
