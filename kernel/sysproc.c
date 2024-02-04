@@ -119,5 +119,5 @@ sys_sysinfo(void)
   }
   result = copyout(p->pagetable, sysinfo_addr + offset_of(struct sysinfo, nproc),
                    (char *)&nproc, sizeof nproc);
-  return 0;
+  return result;
 }
