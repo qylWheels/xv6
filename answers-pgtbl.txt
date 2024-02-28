@@ -1,0 +1,3 @@
+[Speed up system calls]
+1. Syscalls that only need to read data are suitable for speeding up.
+   fstat(), stat() -- they ONLY need to read data.

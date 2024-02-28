@@ -1,4 +1,6 @@
 // Physical memory layout
+#ifndef __XV6_KERNEL_MEMLAYOUT__
+#define __XV6_KERNEL_MEMLAYOUT__
 
 // qemu -machine virt is set up like this,
 // based on qemu's hw/riscv/virt.c:
@@ -77,3 +79,5 @@ struct usyscall {
   int pid;  // Process ID
 };
 #endif
+
+#endif /* __XV6_KERNEL_MEMLAYOUT__ */
