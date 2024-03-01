@@ -75,6 +75,31 @@ int
 sys_pgaccess(void)
 {
   // lab pgtbl: your code here.
+  uint64 base_va;
+  int pgcnt;
+  uint64 user_buf;
+  uint64 krnl_buf = 0;
+
+  argaddr(0, &base_va);
+  argint(1, &pgcnt);
+  argaddr(2, &user_buf);
+
+  // Limit page count offered by user.
+  if (pgcnt > sizeof(krnl_buf) * 8) {
+    return -1;
+  }
+
+  struct proc *p = myproc();
+  for (int i = 0; i < pgcnt; i++) {
+    pte_t *pte = walk(p->pagetable, base_va + i * PGSIZE, 0);
+    if (pte && 0 != (*pte & PTE_A)) {
+      krnl_buf |= (1 << i);
+    }
+    *pte &= (~PTE_A);
+  }
+
+  copyout(p->pagetable, (uint64)user_buf, (char *)&krnl_buf, sizeof krnl_buf);
+
   return 0;
 }
 #endif
