@@ -449,3 +449,45 @@ copyinstr(pagetable_t pagetable, char *dst, uint64 srcva, uint64 max)
     return -1;
   }
 }
+
+// Do the actual work for vmprint().
+static void
+_vmprint(pagetable_t pgtbl, int layer)
+{
+  for (int i = 0; i < PGSIZE / sizeof(uint64); i++) {
+    uint64 pte = pgtbl[i];
+
+    // If pte is invalid, continue.
+    if (!(pte & PTE_V)) {
+      continue;
+    }
+
+    // print indent.
+    for (int j = layer; j < 2; j++) {
+      printf(".. ");
+    }
+
+    // the pte points to a lower page table.
+    if (layer > 0) {
+      // print content.
+      printf("..%d: pte %p pa %p\n", i, pte, PTE2PA(pte));
+
+      // recursively print next level page table.
+      pagetable_t next_level_pgtbl = (pagetable_t)PTE2PA(pte);
+      _vmprint(next_level_pgtbl, layer - 1);
+    } else {   // pte of lowest level page table.
+      // print content.
+      printf("..%d: pte %p pa %p\n", i, pte, PTE2PA(pte));
+    }
+  }
+  return;
+}
+
+// Print the structure of a specific pagetable.
+void
+vmprint(pagetable_t pgtbl)
+{
+  printf("page table %p\n", pgtbl);
+  _vmprint(pgtbl, 2);
+  return;
+}
